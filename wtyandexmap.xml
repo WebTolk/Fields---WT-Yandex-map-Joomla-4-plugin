@@ -1,44 +1,46 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <extension type="plugin" group="fields" method="upgrade">
-	<name>PLG_WTYANDEXMAP</name>
-	<author>Sergey Tolkachyov</author>
-	<creationDate>22/08/2022</creationDate>
-	<copyright>(C) 2022 Sergey Tolkachyov</copyright>
-	<license>GNU General Public License version 2 or later</license>
-	<authorEmail>info@web-tolk.ru</authorEmail>
-	<authorUrl>https://web-tolk.ru</authorUrl>
-	<version>1.0.0</version>
-	<description>PLG_WTYANDEXMAP_DESC</description>
-	<scriptfile>script.php</scriptfile>
-	<files>
-		<filename plugin="wtyandexmap">wtyandexmap.php</filename>
-		<folder>params</folder>
-		<folder>tmpl</folder>
-		<folder>fields</folder>
-	</files>
-	<languages folder="language">
-		<language tag="ru-RU">ru-RU/plg_fields_wtyandexmap.ini</language>
-		<language tag="ru-RU">ru-RU/plg_fields_wtyandexmap.sys.ini</language>
-		<language tag="en-GB">en-GB/plg_fields_wtyandexmap.ini</language>
-		<language tag="en-GB">en-GB/plg_fields_wtyandexmap.sys.ini</language>
-	</languages>
-	<config>
-		<fields name="params">
-			<fieldset name="basic">
-			<field addfieldpath="plugins/fields/wtyandexmap/fields" type="plugininfo" name="plugininfo"/>
-				<field type="text" name="yandex_map_api_key" label="PLG_WTYANDEXMAP_YANDEX_MAP_API_KEY"/>
-				<field type="radio"
-					   name="yandex_api_type"
-					   label="PLG_WTYANDEXMAP_YANDEX_API_TYPE"
-					   default="free" class="btn-group btn-group-yesno">
-					<option value="free">PLG_WTYANDEXMAP_YANDEX_MAP_API_KEY_FREE</option>
-					<option value="paid">PLG_WTYANDEXMAP_YANDEX_MAP_API_KEY_PAID</option>
-				</field>
-				<field type="note" name="yandex_api_type_desc" description="PLG_WTYANDEXMAP_YANDEX_API_TYPE_DESC" class="col-12 alert alert-info"/>
-			</fieldset>
-		</fields>
-	</config>
-	<updateservers>
-			<server type="extension" name="WebTolk - Fields - WT Yandex Map">https://web-tolk.ru/component/swjprojects/jupdate.html?element=fields_wt_yandex_map</server>
-	</updateservers>
+    <name>PLG_WTYANDEXMAP</name>
+    <author>Sergey Tolkachyov</author>
+    <authorEmail>info@web-tolk.ru</authorEmail>
+    <authorUrl>https://web-tolk.ru/</authorUrl>
+    <creationDate>July 2024</creationDate>
+    <copyright>(C) 2024 Sergey Tolkachyov</copyright>
+    <license>GNU General Public License version 3 or later</license>
+    <version>2.0.0</version>
+    <description>PLG_WTYANDEXMAP_DESC</description>
+    <scriptfile>script.php</scriptfile>
+    <namespace path="src">Joomla\Plugin\Fields\WtYandexMap</namespace>
+    <files>
+        <folder plugin="wtyandexmap">src</folder>
+        <folder>services</folder>
+        <folder>language</folder>
+        <folder>params</folder>
+        <folder>tmpl</folder>
+    </files>
+    <languages folder="language">
+        <language tag="ru-RU">ru-RU/plg_fields_wtyandexmap.ini</language>
+        <language tag="ru-RU">ru-RU/plg_fields_wtyandexmap.sys.ini</language>
+        <language tag="en-GB">en-GB/plg_fields_wtyandexmap.ini</language>
+        <language tag="en-GB">en-GB/plg_fields_wtyandexmap.sys.ini</language>
+    </languages>
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field addfieldprefix="Joomla\Plugin\Fields\WtYandexMap\Fields" type="plugininfo" name="plugininfo"/>
+                <field type="text" name="yandex_map_api_key" label="PLG_WTYANDEXMAP_YANDEX_MAP_API_KEY"/>
+                <field type="radio"
+                       name="yandex_api_type"
+                       label="PLG_WTYANDEXMAP_YANDEX_API_TYPE"
+                       default="free" class="btn-group btn-group-yesno">
+                    <option value="free">PLG_WTYANDEXMAP_YANDEX_MAP_API_KEY_FREE</option>
+                    <option value="paid">PLG_WTYANDEXMAP_YANDEX_MAP_API_KEY_PAID</option>
+                </field>
+                <field type="note" name="yandex_api_type_desc" description="PLG_WTYANDEXMAP_YANDEX_API_TYPE_DESC" class="col-12 alert alert-info"/>
+            </fieldset>
+        </fields>
+    </config>
+    <updateservers>
+        <server type="extension" name="WebTolk - Fields - WT Yandex Map">https://web-tolk.ru/component/swjprojects/jupdate.html?element=fields_wt_yandex_map</server>
+    </updateservers>
 </extension>
