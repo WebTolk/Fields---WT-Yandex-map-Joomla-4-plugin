@@ -3,9 +3,9 @@
     <name>PLG_WTYANDEXMAP</name>
     <author>Sergey Tolkachyov</author>
     <authorEmail>info@web-tolk.ru</authorEmail>
-    <authorUrl>https://web-tolk.ru/</authorUrl>
-    <creationDate>July 2024</creationDate>
-    <copyright>(C) 2024 Sergey Tolkachyov</copyright>
+    <authorUrl>https://web-tolk.ru</authorUrl>
+    <creationDate>28.08.2024</creationDate>
+    <copyright>Copyright (c) 2022 - 2024 Sergey Tolkachyov. All rights reserved.</copyright>
     <license>GNU General Public License version 3 or later</license>
     <version>2.0.0</version>
     <description>PLG_WTYANDEXMAP_DESC</description>
@@ -17,6 +17,7 @@
         <folder>language</folder>
         <folder>params</folder>
         <folder>tmpl</folder>
+        <filename>wtyandexmap.xml</filename>
     </files>
     <languages folder="language">
         <language tag="ru-RU">ru-RU/plg_fields_wtyandexmap.ini</language>
@@ -41,6 +42,7 @@
         </fields>
     </config>
     <updateservers>
-        <server type="extension" name="WebTolk - Fields - WT Yandex Map">https://web-tolk.ru/component/swjprojects/jupdate.html?element=fields_wt_yandex_map</server>
+        <server type="extension" name="WebTolk - Fields - WT Yandex Map">https://web-tolk.ru/component/swjprojects/jupdate?element=fields_wt_yandex_map</server>
     </updateservers>
+    <changelogurl>https://web-tolk.ru/jchangelog?element=fields_wt_yandex_map</changelogurl>
 </extension>

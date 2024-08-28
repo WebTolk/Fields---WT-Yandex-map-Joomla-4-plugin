@@ -1,6 +1,6 @@
 <?php
 /**
- * @package       WT Yandex Map
+ * @package    Fields - WT Yandex Map
  * @version       2.0.0
  * @Author        Sergey Tolkachyov, https://web-tolk.ru
  * @copyright     Copyright (C) 2024 Sergey Tolkachyov
@@ -60,7 +60,7 @@ class PlugininfoField extends NoteField
         return '</div>
 		<div class="card container shadow-sm w-100 p-0">
 			<div class="wt-b24-plugin-info row">
-				<div class="col-2 d-flex justify-content-center align-items-center">
+				<div class="col-12 col-md-2 d-flex justify-content-center align-items-center">
 					<a href="https://web-tolk.ru" target="_blank" id="web_tolk_link" title="Go to https://web-tolk.ru">
 							<svg width="200" height="50" viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
 								 <g>
@@ -69,9 +69,9 @@ class PlugininfoField extends NoteField
 								  <text font-weight="bold" xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="32" id="svg_4" y="36.081862" x="74.239105" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#384148">Tolk</text>
 								 </g>
 							</svg>
-				</a>
+					</a>
 				</div>
-				<div class="col-10">
+				<div class="col-12 col-md-10">
 					<div class="card-header bg-white p-1">
 						<span class="badge bg-success">v.' . $wt_plugin_info->version . '</span>
 					</div>

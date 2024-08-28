@@ -1,6 +1,6 @@
 <?php
 /**
- * @package       WT Yandex Map
+ * @package    Fields - WT Yandex Map
  * @version       2.0.0
  * @Author        Sergey Tolkachyov, https://web-tolk.ru
  * @copyright     Copyright (C) 2024 Sergey Tolkachyov
@@ -28,11 +28,11 @@ class WtyandexmapField extends FormField
             $params[$key] = (string)$value;
         }
 
-        if ($params['map_width'])
+        if (array_key_exists('map_width', $params) && $params['map_width'])
         {
             $style .= " width: {$params['map_width']};";
         }
-        if ($params['map_height'])
+        if (array_key_exists('map_height', $params) && $params['map_height'])
         {
             $style .= " height: {$params['map_height']};";
         }
