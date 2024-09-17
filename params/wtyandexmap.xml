@@ -51,13 +51,6 @@
                    name="map_height"
                    label="PLG_WTYANDEXMAP_PARAMS_MAP_HEIGHT_LABEL"
                    description="PLG_WTYANDEXMAP_PARAMS_MAP_HEIGHT_DESC"/>
-            <field type="text"
-                   name="placemark_icon_code"
-                   label="PLG_WTYANDEXMAP_PARAMS_PLACEMARK_ICON_CODE_LABEL"
-                   description="PLG_WTYANDEXMAP_PARAMS_PLACEMARK_ICON_CODE_DESC"
-                   default="islands#blueDotIcon"
-                   hint="islands#blueDotIcon"/>
-
             <field type="radio"
                    name="dont_show_in_category"
                    label="PLG_WTYANDEXMAP_PARAMS_DONT_SHOW_IN_CATEGORY_LABEL"
@@ -68,6 +61,21 @@
                 <option value="0">JSHOW</option>
                 <option value="1">JHIDE</option>
             </field>
+            <field type="filelist"
+                   name="marker_layout"
+                   label="PLG_WTYANDEXMAP_PARAMS_MARKER_LAYOUT_LABEL"
+                   description="PLG_WTYANDEXMAP_PARAMS_MARKER_LAYOUT_DESC"
+                   directory="plugins/fields/wtyandexmap/tmpl/markers"
+                   fileFilter="php"
+                   default="default"
+                   stripext="true"
+                   hide_none="true"/>
+            <field type="text"
+                   name="marker_color"
+                   label="PLG_WTYANDEXMAP_PARAMS_MARKER_COLOR_LABEL"
+                   description ="PLG_WTYANDEXMAP_PARAMS_MARKER_COLOR_DESC"
+                   default="red"
+                   showon="marker_layout:"/>
         </fieldset>
     </fields>
 </form>

@@ -12,6 +12,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\WebAsset\WebAssetManager;
 use Joomla\Uri\Uri;
+use Joomla\CMS\Layout\FileLayout;
 
 defined('_JEXEC') or die;
 
@@ -32,7 +33,7 @@ defined('_JEXEC') or die;
  * $field->state int 1 Published or not
  * $field->access int 1  Access group id
  * $field->created_time string "2024-08-27 12:06:05"
- * $field->created_user_id in 822
+ * $field->created_user_id int 822
  * $field->ordering int 0
  * $field->language string "*" or "en_GB", "ru_RU"
  * $field->fieldparams Joomla\Registry\Registry field params for site: map_center, map_zoom, map_type, map_width, map_height
@@ -61,14 +62,14 @@ defined('_JEXEC') or die;
 // SEE https://yandex.ru/dev/jsapi30/doc/ru/upgrade/
 //
 //		<script>const defaultMarker = new ymaps3.YMapDefaultMarker({
-//		  title: 'Привет мир!',
-//		  subtitle: 'Добрый и светлый',
+//		  title: 'Hello world!',
+//		  subtitle: 'Kind and bright',
 //		  color: 'blue'
 //		});
 //
 //		const content = document.createElement('div');
 //		const marker = new ymaps3.YMapMarker(content);
-//		content.innerHTML = '<div>Тут может быть все что угодно</div>';
+//		content.innerHTML = '<div>There could be anything here</div>';
 //
 //		const map = new ymaps3.YMap(document.getElementById('map-root'), {
 //		  location: INITIAL_LOCATION
@@ -77,7 +78,6 @@ defined('_JEXEC') or die;
 //		.addChild(new ymaps3.YMapDefaultFeaturesLayer({zIndex: 1800}))
 //		  .addChild(defaultMarker)
 //		.addChild(marker);</script>
-
 
 
 /**
@@ -95,7 +95,7 @@ $yandex_map_api_entry_point_paid = 'https://enterprise.api-maps.yandex.ru/3.0/';
 $app    = Factory::getApplication();
 $option = $app->getInput()->get('option');
 
-// Если поле не заполнено
+// If the field is empty
 if (empty($field->value))
 {
 	return '';
@@ -103,13 +103,13 @@ if (empty($field->value))
 
 $view = $app->getInput()->get('view');
 
-// Опция "не показывать в категориях"
+// Don't show in category option
 if ($view == 'category' && $fieldParams->get('dont_show_in_category', 0) == 1)
 {
 	return '';
 }
 
-// Получаем API ключ Яндекс.карт
+// Yandex.Map API key
 
 if (empty($fieldParams->get('yandex_map_api_key')))
 {
@@ -118,7 +118,7 @@ if (empty($fieldParams->get('yandex_map_api_key')))
 	return '';
 }
 
-// Подключаем js Яндекс.карт
+// Connect Yandex.Map javascript
 $yandexMapHost = $fieldParams->get('yandex_api_type') === 'free' ? $yandex_map_api_entry_point_free : $yandex_map_api_entry_point_paid;
 $uri           = new Uri($yandexMapHost);
 $uri->setQuery([
@@ -143,6 +143,22 @@ $value = trim((!empty($field->rawvalue) ? $field->rawvalue : $fieldParams->get('
 $layer = $fieldParams->get('map_type') === 'map' ? 'YMapDefaultSchemeLayer' : 'YMapDefaultSatelliteLayer';
 /** @var string $id unique map field id */
 $id = 'plg_field_wtyandexmap_' . $item->id . '_' . $field->id;
+/** @var string $id marker color verbal or RGB */
+$marker_color = $fieldParams->get('marker_color', 'red');
+
+// YMapMarker - with custom HTML in item
+// YMapDefaultMarker - standart placemark
+$marker_layout = $fieldParams->get('marker_layout', 'default');
+
+$marker_type = ($marker_layout == 'default' ? 'YMapDefaultMarker' : 'YMapMarker');
+
+// Include custom marker layout
+if ($marker_layout !== 'default')
+{
+	$layout = new FileLayout($marker_layout, JPATH_SITE . '/plugins/fields/wtyandexmap/tmpl/markers', ['id' => $id, 'field' => $field, 'field_params' => $fieldParams]);
+	echo $layout->render();
+}
+
 
 echo "
 	<div id='{$id}'>
@@ -156,6 +172,7 @@ echo "
 	        await ymaps3.ready;
 	        const {YMapZoomControl} = await ymaps3.import('@yandex/ymaps3-controls@0.0.1');
 	        const {YMapDefaultMarker} = await ymaps3.import('@yandex/ymaps3-markers@0.0.1');
+	        const {YMapMarker} = ymaps3;
 
 			const coords = '{$value}';
 			const [y,x] = coords.split(',');
@@ -175,16 +192,34 @@ echo "
 	        map.addChild(
                 new ymaps3.YMapControls({position: 'right'}).addChild(new YMapZoomControl())
 	        );
+			";
 
-	        const marker = new YMapDefaultMarker({
-	            coordinates: [x, y],
-				//title: 'Hello World!',
-				//subtitle: '{$value}',
-				//color: 'blue',
-	        });
-			
-	        map.addChild(marker);
+// We need to add a layout for marker
 
-		}
+if ($marker_type == 'YMapDefaultMarker')
+{
+	echo " const markerElement = new {$marker_type}({
+								coordinates: [x, y],
+								//title: 'Hello World!',
+								//subtitle: '{$value}',
+								color: '{$marker_color}',
+							});
+						
+			map.addChild(markerElement);
+			";
+}
+else
+{
+
+	echo "
+					const markerTemplate = document.getElementById('{$id}_marker');
+					const markerElement = document.createElement('div');
+					markerElement.append({$id}_marker.content.cloneNode(true));
+					map.addChild(new YMapMarker({coordinates: [x, y]}, markerElement));
+					";
+
+}
+echo "			
+	}
 	</script>
 	";
