@@ -91,6 +91,7 @@ $layer = $fieldparams->get('map_type') === 'map' ? 'YMapDefaultSchemeLayer' : 'Y
         console.log(position);
         if(position) {
             mapCenter = position.coords;
+            inputEl.value = mapCenter[1].toFixed(6) + ',' + mapCenter[0].toFixed(6);
         }
 
         const cfg = {
