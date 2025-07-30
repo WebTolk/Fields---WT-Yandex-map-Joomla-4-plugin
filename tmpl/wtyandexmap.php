@@ -1,7 +1,7 @@
 <?php
 /**
  * @package    Fields - WT Yandex Map
- * @version       2.0.0
+ * @version       2.1.0
  * @Author        Sergey Tolkachyov, https://web-tolk.ru
  * @copyright     Copyright (C) 2024 Sergey Tolkachyov
  * @license       GNU/GPL http://www.gnu.org/licenses/gpl-3.0.html
@@ -10,9 +10,9 @@
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Layout\FileLayout;
 use Joomla\CMS\WebAsset\WebAssetManager;
 use Joomla\Uri\Uri;
-use Joomla\CMS\Layout\FileLayout;
 
 defined('_JEXEC') or die;
 
@@ -137,6 +137,7 @@ $map_height = !empty($fieldParams->get('map_height')) ? ' height: ' . $fieldPara
 $style .= $map_width . $map_height;
 
 /** @var string $value Coordinates for baloon */
+
 $value = trim((!empty($field->rawvalue) ? $field->rawvalue : $fieldParams->get('map_center')));
 
 /** @var string $layer map type */
@@ -145,6 +146,8 @@ $layer = $fieldParams->get('map_type') === 'map' ? 'YMapDefaultSchemeLayer' : 'Y
 $id = 'plg_field_wtyandexmap_' . $item->id . '_' . $field->id;
 /** @var string $id marker color verbal or RGB */
 $marker_color = $fieldParams->get('marker_color', 'red');
+/** @var bool $use_overlay */
+$use_overlay = $field->fieldparams->get('use_overlay',  false);
 
 // YMapMarker - with custom HTML in item
 // YMapDefaultMarker - standart placemark
@@ -158,68 +161,76 @@ if ($marker_layout !== 'default')
 	$layout = new FileLayout($marker_layout, JPATH_SITE . '/plugins/fields/wtyandexmap/tmpl/markers', ['id' => $id, 'field' => $field, 'field_params' => $fieldParams]);
 	echo $layout->render();
 }
+?>
 
-
-echo "
-	<div id='{$id}'>
-	    <wtyandexmap style='{$style}'></wtyandexmap>
+<div style="position:relative;">
+	<div id="<?php echo $id;?>">
+		<wtyandexmap style="<?php echo $style;?>"></wtyandexmap>
 	</div>
-	<script>
-	    document.addEventListener('DOMContentLoaded', initYandexMap_{$id});
-	    
-	    async function initYandexMap_{$id}()
-	    {
-	        await ymaps3.ready;
-	        const {YMapZoomControl} = await ymaps3.import('@yandex/ymaps3-controls@0.0.1');
-	        const {YMapDefaultMarker} = await ymaps3.import('@yandex/ymaps3-markers@0.0.1');
-	        const {YMapMarker} = ymaps3;
+	<?php if($use_overlay) : ?>
+		<div id="<?php echo $id ;?>_overlay" style="position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.25);
+            z-index: 0;
+            cursor: pointer;"></div>
+	<?php endif; ?>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', initYandexMap_<?php echo $id;?>());
+    async function initYandexMap_<?php echo $id;?>() {
+        await ymaps3.ready;
+        const {YMapZoomControl} = await ymaps3.import('@yandex/ymaps3-controls@0.0.1');
+        const {YMapDefaultMarker} = await ymaps3.import('@yandex/ymaps3-markers@0.0.1');
+        const {YMapMarker} = ymaps3;
 
-			const coords = '{$value}';
-			const [y,x] = coords.split(',');
-	        
-	        const container = document.getElementById('{$id}');
-	        const elem = container.querySelector('wtyandexmap');
-	        const cfg = {
-	            location: {
-	                center: [x, y],
-	                zoom: {$fieldParams->get('map_zoom')}
-	            }
-	        };
+        const coords = '<?php echo $value;?>';
+        const [y, x] = coords.split(',');
 
-	        const map = new ymaps3.YMap(elem, cfg);
-	        map.addChild(new ymaps3.{$layer}());
-	        map.addChild(new ymaps3.YMapDefaultFeaturesLayer());
-	        map.addChild(
-                new ymaps3.YMapControls({position: 'right'}).addChild(new YMapZoomControl())
-	        );
-			";
+        const container = document.getElementById('<?php echo $id;?>');
+        const elem = container.querySelector('wtyandexmap');
+        const cfg = {
+            location: {
+                center: [x, y],
+                zoom: <?php echo $fieldParams->get('map_zoom');?>
+            }
+        }
 
-// We need to add a layout for marker
+        const map = new ymaps3.YMap(elem, cfg);
+        map.addChild(new ymaps3.<?php echo $layer;?>())
+        map.addChild(new ymaps3.YMapDefaultFeaturesLayer());
+        map.addChild(
+            new ymaps3.YMapControls({position: 'right'}).addChild(new YMapZoomControl())
+        );
 
-if ($marker_type == 'YMapDefaultMarker')
-{
-	echo " const markerElement = new {$marker_type}({
-								coordinates: [x, y],
-								//title: 'Hello World!',
-								//subtitle: '{$value}',
-								color: '{$marker_color}',
-							});
-						
-			map.addChild(markerElement);
-			";
-}
-else
-{
+		<?php
+		// We need to add a layout for marker
 
-	echo "
-					const markerTemplate = document.getElementById('{$id}_marker');
-					const markerElement = document.createElement('div');
-					markerElement.append({$id}_marker.content.cloneNode(true));
-					map.addChild(new YMapMarker({coordinates: [x, y]}, markerElement));
-					";
+		if ($marker_type == 'YMapDefaultMarker') : ?>
+        const markerElement = new YMapDefaultMarker({
+            coordinates: [x, y],
+            //title: 'Hello World!',
+            //subtitle: '{$value}',
+            color: '<?php echo $marker_color;?>',
+        });
 
-}
-echo "			
-	}
-	</script>
-	";
+        map.addChild(markerElement);
+		<?php else : ?>
+        const markerTemplate = document.getElementById('<?php echo $id;?>_marker');
+        const markerElement = document.createElement('div');
+        markerElement.append(markerTemplate.content.cloneNode(true));
+        map.addChild(new YMapMarker({coordinates: [x, y]}, markerElement));
+		<?php endif; ?>
+		<?php if($use_overlay):?>
+        const overlay = document.getElementById('<?php echo $id;?>_overlay');
+        overlay.addEventListener('click',(e) => {
+            overlay.style.zIndex = -1;
+        });
+        elem.addEventListener('mouseleave',(e) => {
+            overlay.style.zIndex = 0;
+        });
+		<?php endif; ?>
+    }
+</script>

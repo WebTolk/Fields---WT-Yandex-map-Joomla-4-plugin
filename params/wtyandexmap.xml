@@ -76,6 +76,26 @@
                    description ="PLG_WTYANDEXMAP_PARAMS_MARKER_COLOR_DESC"
                    default="red"
                    showon="marker_layout:"/>
+            <field type="radio"
+                   name="use_overlay"
+                   label="PLG_WTYANDEXMAP_PARAMS_USE_OVERLAY_LABEL"
+                   description="PLG_WTYANDEXMAP_PARAMS_USE_OVERLAY_DESC"
+                   default="0"
+                   layout="joomla.form.field.radio.switcher"
+                   filter="integer">
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field type="radio"
+                   name="get_geolocation_if_empty_field"
+                   label="PLG_WTYANDEXMAP_PARAMS_GET_GEOLOCATION_IF_EMPTY_FIELD_LABEL"
+                   description="PLG_WTYANDEXMAP_PARAMS_GET_GEOLOCATION_IF_EMPTY_FIELD_DESC"
+                   default="0"
+                   layout="joomla.form.field.radio.switcher"
+                   filter="integer">
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
         </fieldset>
     </fields>
 </form>
