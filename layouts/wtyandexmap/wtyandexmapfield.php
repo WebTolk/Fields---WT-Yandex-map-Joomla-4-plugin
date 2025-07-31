@@ -61,8 +61,8 @@ else
 {
 	$style .= " height: 300px;";
 }
-
-if (empty($value) && !$fieldparams->get('get_geolocation_if_empty_field', false))
+$detectGeolocation = (bool)$fieldparams->get('get_geolocation_if_empty_field', false);
+if (empty($value) && !$detectGeolocation)
 {
 	$value = $fieldparams->get('map_center');
 }
@@ -85,15 +85,17 @@ $layer = $fieldparams->get('map_type') === 'map' ? 'YMapDefaultSchemeLayer' : 'Y
         const container = document.getElementById("<?php echo $id;?>");
         const elem = container.querySelector("wtyandexmap");
         const inputEl = container.querySelector("input");
+
         let mapCenter = inputEl.value.split(",");
         mapCenter.reverse();
-        const position = await ymaps3.geolocation.getPosition();
-        console.log(position);
-        if(position) {
-            mapCenter = position.coords;
-            inputEl.value = mapCenter[1].toFixed(6) + ',' + mapCenter[0].toFixed(6);
-        }
-
+        <?php if($detectGeolocation) :?>
+            const position = await ymaps3.geolocation.getPosition();
+            console.log(position);
+            if(position && inputEl.value.length === 0) {
+                mapCenter = position.coords;
+                inputEl.value = mapCenter[1].toFixed(6) + ',' + mapCenter[0].toFixed(6);
+            }
+        <?php endif; ?>
         const cfg = {
             location: {
                 center: mapCenter,
